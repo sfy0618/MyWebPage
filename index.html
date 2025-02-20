@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-Tw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>網頁計算器</title>
+    <style>
+        /* 计算器整体样式 */
+        .calculator {
+            width: 320px;
+            margin: 50px auto;
+            background: #f0f0f0;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+
+        /* 显示屏幕 */
+        #display {
+            width: 100%;
+            height: 60px;
+            margin-bottom: 15px;
+            background: #fff;
+            border-radius: 5px;
+            font-size: 2em;
+            text-align: right;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 2px solid #ddd;
+        }
+
+        /* 按钮布局 */
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        /* 按钮通用样式 */
+        button {
+            padding: 20px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        /* 数字按钮 */
+        .number {
+            background: #fff;
+            color: #333;
+        }
+
+        /* 运算符按钮 */
+        .operator {
+            background: #f39c12;
+            color: white;
+        }
+
+        /* 特殊功能按钮 */
+        .special {
+            background: #95a5a6;
+            color: white;
+        }
+
+        /* 悬停效果 */
+        button:hover {
+            opacity: 0.8;
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" id="display" readonly>
+        <div class="buttons">
+            <button class="special" onclick="clearDisplay()">C</button>
+            <button class="operator" onclick="appendOperator('%')">%</button>
+            <button class="operator" onclick="appendOperator('/')">/</button>
+            <button class="operator" onclick="appendOperator('*')">×</button>
+            
+            <button class="number" onclick="appendNumber('7')">7</button>
+            <button class="number" onclick="appendNumber('8')">8</button>
+            <button class="number" onclick="appendNumber('9')">9</button>
+            <button class="operator" onclick="appendOperator('-')">-</button>
+            
+            <button class="number" onclick="appendNumber('4')">4</button>
+            <button class="number" onclick="appendNumber('5')">5</button>
+            <button class="number" onclick="appendNumber('6')">6</button>
+            <button class="operator" onclick="appendOperator('+')">+</button>
+            
+            <button class="number" onclick="appendNumber('1')">1</button>
+            <button class="number" onclick="appendNumber('2')">2</button>
+            <button class="number" onclick="appendNumber('3')">3</button>
+            <button class="operator" onclick="calculate()" style="grid-row: span 2">=</button>
+            
+            <button class="number" onclick="appendNumber('0')" style="grid-column: span 2">0</button>
+            <button class="number" onclick="appendNumber('.')">.</button>
+        </div>
+    </div>
+
+    <script>
+        let display = document.getElementById('display');
+        let currentExpression = '';
+
+        // 数字输入处理
+        function appendNumber(num) {
+            if (currentExpression === '0' && num !== '.') {
+                currentExpression = num;
+            } else {
+                currentExpression += num;
+            }
+            updateDisplay();
+        }
+
+        // 运算符处理
+        function appendOperator(operator) {
+            const lastChar = currentExpression.slice(-1);
+            if ('+-*/%'.includes(lastChar)) return;
+            currentExpression += operator;
+            updateDisplay();
+        }
+
+        // 计算结果
+        function calculate() {
+            try {
+                currentExpression = eval(currentExpression).toString();
+                updateDisplay();
+            } catch (error) {
+                currentExpression = 'Error';
+                updateDisplay();
+                setTimeout(() => {
+                    clearDisplay();
+                }, 1000);
+            }
+        }
+
+        // 清除输入
+        function clearDisplay() {
+            currentExpression = '0';
+            updateDisplay();
+            currentExpression = '';
+        }
+
+        // 更新显示内容
+        function updateDisplay() {
+            display.value = currentExpression || '0';
+        }
+    </script>
+</body>
+</html>
